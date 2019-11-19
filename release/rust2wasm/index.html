@@ -1,5 +1,14 @@
 <script type="module">
 import wasmInit from "./rust2wasm_example.js";
-var wasm = await wasmInit("./rust2wasm_example_bg.wasm");
-console.log(wasm.add(10,20));
+const runWasm = async () => {
+    let wasm = await wasmInit("./rust2wasm_example_bg.wasm");
+    console.log(wasm.add(10,20));
+};
+runWasm();
 </script>
+<br>
+Rust + wasm example
+<br>
+builded with wasm-pack: "wasm-pack build --target web --release"
+<br>
+should output 30 in console
