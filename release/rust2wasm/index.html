@@ -1,5 +1,5 @@
 <script type="module">
 import wasmInit from "./rust2wasm_example.js";
-var wasm = wasmInit.init();
+var wasm = await wasmInit("./rust2wasm_example_bg.wasm");
 console.log(wasm.add(10,20));
 </script>
