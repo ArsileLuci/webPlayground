@@ -11,7 +11,7 @@
         const runWasm = async () => {
             let wasm = await wasmInit("./rust2wasm_example_bg.wasm");
             console.log(wasm.add(10, 20));
-            add = wasm.add;
+            wasmadd = wasm.add;
         };
         runWasm();
     </script>
@@ -21,7 +21,9 @@
     builded with wasm-pack: "wasm-pack build --target web --release"
     <br>
     should output 30 in console
-
+    <br>
+    Example should log into console result of Sum A and B
+    <br>
     <form style="width: 500px;">
         <div class="form-group">
             <input type="number" class="form-control" id="exampleInputa1" aria-describedby="aHelp"
