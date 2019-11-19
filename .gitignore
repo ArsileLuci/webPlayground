@@ -31,4 +31,5 @@
 *.out
 *.app
 
+# Cargo target folder
 */target/*
