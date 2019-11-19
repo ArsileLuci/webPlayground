@@ -1,0 +1,15 @@
+{
+  "name": "rust2wasm_example",
+  "collaborators": [
+    "Evgeny.Korchagin"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "rust2wasm_example_bg.wasm",
+    "rust2wasm_example.js",
+    "rust2wasm_example.d.ts"
+  ],
+  "module": "rust2wasm_example.js",
+  "types": "rust2wasm_example.d.ts",
+  "sideEffects": "false"
+}
