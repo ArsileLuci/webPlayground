@@ -7,11 +7,10 @@
 <body>
     <script type="module">
         import wasmInit from "./rust2wasm_example.js";
-        let wasmadd;
         const runWasm = async () => {
             let wasm = await wasmInit("./rust2wasm_example_bg.wasm");
             console.log(wasm.add(10, 20));
-            wasmadd = wasm.add;
+            window.wasmadd = wasm.add;
         };
         runWasm();
     </script>
@@ -32,7 +31,7 @@
         <div class="form-group">
             <input type="number" class="form-control" id="exampleInputb1" placeholder="B">
         </div>
-        <button type="submit" class="btn btn-primary" onclick="console.log(wasmadd(document.getElementById('exampleInputa1').value,document.getElementById('exampleInputb1').value))">Sum</button>
+        <button type="button" class="btn btn-primary" onclick="console.log(window.wasmadd(document.getElementById('exampleInputa1').value,document.getElementById('exampleInputb1').value))">Sum</button>
     </form>
 
 
