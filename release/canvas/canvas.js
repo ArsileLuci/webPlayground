@@ -1,53 +1,52 @@
-
-let wasm;
-
-function init(module) {
-    if (typeof module === 'undefined') {
-        module = import.meta.url.replace(/\.js$/, '.wasm');
-    }
-    let result;
-    const imports = {};
-
-    if ((typeof URL === 'function' && module instanceof URL) || typeof module === 'string' || (typeof Request === 'function' && module instanceof Request)) {
-
-        const response = fetch(module);
-        if (typeof WebAssembly.instantiateStreaming === 'function') {
-            result = WebAssembly.instantiateStreaming(response, imports)
-            .catch(e => {
-                return response
-                .then(r => {
-                    if (r.headers.get('Content-Type') != 'application/wasm') {
-                        console.warn("`WebAssembly.instantiateStreaming` failed because your server does not serve wasm with `application/wasm` MIME type. Falling back to `WebAssembly.instantiate` which is slower. Original error:\n", e);
-                        return r.arrayBuffer();
-                    } else {
-                        throw e;
-                    }
-                })
-                .then(bytes => WebAssembly.instantiate(bytes, imports));
-            });
+fetch("canvas.wasm").then(response =>
+    response.arrayBuffer()
+  ).then(bytes =>
+  
+    // the Rust side needs a cos function
+    WebAssembly.instantiate(bytes, { env: { cos: Math.cos } })
+  ).then(results => {
+    let module = {};
+    let mod = results.instance;
+    module.alloc   = mod.exports.alloc;
+    module.dealloc = mod.exports.dealloc;
+    module.fill    = mod.exports.fill;
+  
+    var width  = 500;
+    var height = 500;
+  
+  
+    var canvas = document.getElementById('screen');
+    if (canvas.getContext) {
+      var ctx = canvas.getContext('2d');
+  
+      let byteSize = width * height * 4;
+      var pointer = module.alloc( byteSize );
+  
+      var usub = new Uint8ClampedArray(mod.exports.memory.buffer, pointer, byteSize);
+      var img = new ImageData(usub, width, height);
+  
+      var start = null;
+      function step(timestamp) {
+        var progress;
+        if (start === null) start = timestamp;
+        progress = timestamp - start;
+        if (progress > 100) {
+          module.fill(pointer, width, height, timestamp);
+  
+          start = timestamp
+  
+          window.requestAnimationFrame(draw);
         } else {
-            result = response
-            .then(r => r.arrayBuffer())
-            .then(bytes => WebAssembly.instantiate(bytes, imports));
+          window.requestAnimationFrame(step);
         }
-    } else {
-
-        result = WebAssembly.instantiate(module, imports)
-        .then(result => {
-            if (result instanceof WebAssembly.Instance) {
-                return { instance: result, module };
-            } else {
-                return result;
-            }
-        });
+      }
+  
+      function draw() {
+        ctx.putImageData(img, 0, 0)
+        window.requestAnimationFrame(step);
+      }
+  
+      window.requestAnimationFrame(step);
     }
-    return result.then(({instance, module}) => {
-        wasm = instance.exports;
-        init.__wbindgen_wasm_module = module;
-
-        return wasm;
-    });
-}
-
-export default init;
-
+  
+  });
