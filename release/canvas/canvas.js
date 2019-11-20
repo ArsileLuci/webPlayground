@@ -3,7 +3,7 @@ let wasm;
 
 function init(module) {
     if (typeof module === 'undefined') {
-        module = import.meta.url.replace(/\.js$/, '_bg.wasm');
+        module = import.meta.url.replace(/\.js$/, '.wasm');
     }
     let result;
     const imports = {};
