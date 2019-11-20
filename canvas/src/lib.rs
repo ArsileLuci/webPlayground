@@ -38,16 +38,17 @@ pub extern "C" fn fill(pointer: *mut u8, max_width: usize, max_height: usize, ti
         let height = i * 4 / 4 / max_width;
         let width  = i * 4 / 4 % max_width;
 
-        if i%4 == 3 {
-            // set opacity to 1
-            sl[i].alpha = 255;
-        } else if i%4 == 0 {
+        
+        // set opacity to 1
+        sl[i].alpha = 255;
+        {
             // create a red ripple effect from the top left corner
             let len = ((height*height + width*width) as f64).sqrt();
             let nb = time  + len / 4.0;
             let a = 128.0 + nb.cos() * 128.0;
             sl[i].red = a as u8;
-        } else if i % 4 == 2 {
+        }
+        {
             // create a blue ripple effect from the top right corner
             let width = 500 - width;
             let len = ((height*height + width*width) as f64).sqrt();
